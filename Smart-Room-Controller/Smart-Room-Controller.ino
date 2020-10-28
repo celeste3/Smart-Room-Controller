@@ -7,7 +7,7 @@
 
 #include <SPI.h>
 #include <Wire.h>
-#include <Adafruit_Sensor.h>
+
 #include <Adafruit_BME280.h>
 #include <Adafruit_GFX.h>
 #include <Adafruit_SSD1306.h>
@@ -32,7 +32,7 @@ bool etherStatus;
 const int serialClock = 10;
 
 const int echoPin = 3;  // attach digital pin Echo of HC-SR04
-const int trigPin = 4;  // attach digital pin Trig of HC-SR04
+const int trigPin = 2;  // attach digital pin Trig of HC-SR04
 
 const int teaButton = 13;
 const int fanButton = 14;
@@ -66,44 +66,48 @@ void setup() {
      Serial.println("Could not find a valid BME280 sensor, check wiring, address, sensor ID!");
      Serial.print(F("Fail"));
 
-      pinMode (teaButton, INPUT);
-      pinMode (fanButton, INPUT);
+      // SSD1306_SWITCHCAPVCC = generate display voltage from 3.3V internally
+  if(!display.begin(SSD1306_SWITCHCAPVCC, 0x3C)) { // Address 0x3C for 128x32
+    Serial.println(F("SSD1306 allocation failed"));
+    for(;;); // Don't proceed, loop forever
+  }
+
+  // Show initial display buffer contents on the screen --
+  // the library initializes this with an Adafruit splash screen.
+  display.display();
+  delay(2000); // Pause for 2 seconds
+         
+  // Clear the buffer
+  display.clearDisplay();
+
+  // Show the display buffer on the screen. You MUST call display() after
+  // drawing commands to make them visible on screen!
+  display.display();
+  delay(2000);
+
+  pinMode (teaButton, INPUT);
+  pinMode (fanButton, INPUT);
+    
   }
 }
 
-//
-//
-//// SSD1306_SWITCHCAPVCC = generate display voltage from 3.3V internally
-//  if(!display.begin(SSD1306_SWITCHCAPVCC, 0x3C)) { // Address 0x3C for 128x32
-//    Serial.println(F("SSD1306 allocation failed"));
-//    for(;;); // Don't proceed, loop forever
-//  }
-//               //CODE FOR OLED
-//  // Show initial display buffer contents on the screen --
-//  // the library initializes this with an Adafruit splash screen.
-//  display.display();
-//  delay(2000); // Pause for 2 seconds
-//
-//  // Clear the buffer
-//  display.clearDisplay();
-//
-//  // Draw a single pixel in white
-//  display.drawPixel(10, 10, SSD1306_WHITE);
-//
-//  // Show the display buffer on the screen. You MUST call display() after
-//  // drawing commands to make them visible on screen!
-//  display.display();
-//  delay(2000);
-//  // display.display() is NOT necessary after every single drawing command,
-//  // unless that's what you want...rather, you can batch up a bunch of
-//  // drawing operations and then update the screen all at once by calling
-//  // display.display(). These examples demonstrate both approaches...
-//  
-//   testdrawstyles();    // Draw 'stylized' characters THIS IS NEEDED
-
 void loop() {
+  
    // Reads temperature in fahrenheit
    tempC = bme.readTemperature();
    tempF = ( tempC*9/5)+32;
-   Serial.printf("%f\n",tempF);
+   
+   //display.clearDisplay();
+   display.setTextSize(1);
+   display.setTextColor(SSD1306_WHITE);
+   display.setCursor(0,0);             // Start at top-left corner
+
+   Serial.printf("test%f\n",tempF);
+   display.printf("%f\n",tempF);
+   display.display(); 
+  
 } //End Void Loop
+
+void displayTemp() {
+  
+}
