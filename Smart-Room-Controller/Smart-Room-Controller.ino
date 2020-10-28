@@ -13,24 +13,24 @@
 #include <Adafruit_SSD1306.h>
 #include <Ethernet.h>
 #include <mac.h>
+#include <wemo.h>
 
 #define SCREEN_WIDTH 128 // OLED display width, in pixels
-#define SCREEN_HEIGHT 32 // OLED display height, in pixels
+#define SCREEN_HEIGHT 64 // OLED display height, in pixels
 
 // Declaration for an SSD1306 display connected to I2C (SDA, SCL pins)
 #define OLED_RESET     4 // Reset pin # (or -1 if sharing Arduino reset pin)
-Adafruit_BME280 bme; // use I2C interface       Errors without this code
-
 Adafruit_SSD1306 display(SCREEN_WIDTH, SCREEN_HEIGHT, &Wire, OLED_RESET);
+
+Adafruit_BME280 bme; // use I2C interface       Errors without this code
 
 EthernetClient client;
 bool status;
-const int echoPin = 4;
-const int trigPin = 5;
+const int echoPin = 3;  // attach digital pin Echo of HC-SR04
+const int trigPin = 4;  // attach digital pin Trig of HC-SR04
 const int serialClock = 10;
-const int serialData = 12;
 const int teaButton = 13;
-const int fanButton = 16;
+const int fanButton = 14;
 float tempF;
 
 void setup() {
@@ -98,7 +98,7 @@ void setup() {
 
 void loop() {
    // Reads temperature in fahrenheit
-   tempF =(tempC + 32)*5/9;
+   tempF =( + 32)*5/9;
    Serial.printf("%f\n",tempF);
 
 
