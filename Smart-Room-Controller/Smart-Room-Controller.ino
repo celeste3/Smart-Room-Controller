@@ -23,15 +23,20 @@
 Adafruit_SSD1306 display(SCREEN_WIDTH, SCREEN_HEIGHT, &Wire, OLED_RESET);
 
 Adafruit_BME280 bme; // use I2C interface       Errors without this code
+int bmeStatus;
+float tempF;
+float tempC;
 
 EthernetClient client;
-bool status;
+bool ethStatus;
+const int serialClock = 10;
+
 const int echoPin = 3;  // attach digital pin Echo of HC-SR04
 const int trigPin = 4;  // attach digital pin Trig of HC-SR04
-const int serialClock = 10;
+
 const int teaButton = 13;
 const int fanButton = 14;
-float tempF;
+
 
 void setup() {
   //Open Serial Communication and wait for port to open: //This Code is not mine testing Ethernet connection
@@ -40,10 +45,10 @@ void setup() {
   while (!Serial);
   Serial.println("Starting Program");
   //Start ethernet connection
-  status = Ethernet.begin(mac); 
-  if (!status) {
+  ethStatus = Ethernet.begin(mac); 
+  if (!ethStatus) {
     Serial.println("failed to configure Ethernet using DHCP");
-    //no point in continueing 
+    //no point in continuing
     while(1);
     }
   //print your local IP address
@@ -54,16 +59,18 @@ void setup() {
     if (thisbyte < 3) Serial.print(".");
     }
   Serial.println();
+
+      
+ //default settings
+  bmeStatus = bme.begin(0x76);
+  
+  if(bmeStatus==false){
+     Serial.println("Could not find a valid BME280 sensor, check wiring, address, sensor ID!");
+     Serial.print(F("Fail"));
+  }
+
 }
 
-//    THIS IS CODE FOR bme senor communcation with serial monitor
-// //default settings
-//  status = bme.begin(0x76);
-//  
-//  if(status==false){
-//     Serial.println("Could not find a valid BME280 sensor, check wiring, address, sensor ID!");
-//     Serial.print(F("Fail"));
-//  }
 
 
 //
@@ -98,7 +105,8 @@ void setup() {
 
 void loop() {
    // Reads temperature in fahrenheit
-   tempF =( + 32)*5/9;
+   tempC = bme.readTemperature();
+   tempF = ( tempC*9/5)+32;
    Serial.printf("%f\n",tempF);
 
 
