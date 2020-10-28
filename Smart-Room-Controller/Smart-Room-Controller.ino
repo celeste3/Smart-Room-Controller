@@ -31,11 +31,15 @@ EthernetClient client;
 bool etherStatus;
 const int serialClock = 10;
 
-const int echoPin = 3;  // attach digital pin Echo of HC-SR04
-const int trigPin = 2;  // attach digital pin Trig of HC-SR04
+const int echoPin = 2;  // attach digital pin Echo of HC-SR04
+const int trigPin = 3;  // attach digital pin Trig of HC-SR04
 
 const int teaButton = 13;
 const int fanButton = 14;
+
+// Declare Variables for getMotion
+long duration;  // variable for the duration of sound wave travel
+int distance;   // variable for the distance measurement
 
 void setup() {
   //Open Serial Communication and wait for port to open: //This Code is not mine testing Ethernet connection
@@ -65,7 +69,7 @@ void setup() {
   if(bmeStatus==false){
      Serial.println("Could not find a valid BME280 sensor, check wiring, address, sensor ID!");
      Serial.print(F("Fail"));
-
+  }
       // SSD1306_SWITCHCAPVCC = generate display voltage from 3.3V internally
   if(!display.begin(SSD1306_SWITCHCAPVCC, 0x3C)) { // Address 0x3C for 128x32
     Serial.println(F("SSD1306 allocation failed"));
@@ -85,29 +89,51 @@ void setup() {
   display.display();
   delay(2000);
 
-  pinMode (teaButton, INPUT);
-  pinMode (fanButton, INPUT);
+  //From Brains HC-SR04 Test Code
+  pinMode(trigPin, OUTPUT); // Sets the trigPin as an OUTPUT
+  pinMode(echoPin, INPUT); // Sets the echoPin as an INPUT
+  
+  Serial.begin(9600);
+  delay(100);         // wait for Serial Monitor to Open 
+  Serial.println("Ultrasonic Sensor HC-SR04 Test");
+
+   //pinMode (teaButton, INPUT);
+  //pinMode (fanButton, INPUT);
     
-  }
 }
 
 void loop() {
+  displayTemp();
+  getMotion();
   
+} //End Void Loop
+
+void getMotion(){
+  // Clears the trigPin condition
+  digitalWrite(trigPin, LOW);
+  delayMicroseconds(2);
+  
+  // Sets the trigPin HIGH (ACTIVE) for 10 microseconds, this is the pulse that will be detected
+  digitalWrite(trigPin, HIGH);
+  delayMicroseconds(10);
+  digitalWrite(trigPin, LOW);
+  duration = pulseIn(echoPin, HIGH);
+  
+  distance = duration * 0.034 / 2; // Speed of sound wave divided by 2 (go and back)
+  Serial.printf("Time %i, Distance: %i, Duration %i \n",millis(),distance, duration);
+}
+
+void displayTemp() {
    // Reads temperature in fahrenheit
    tempC = bme.readTemperature();
    tempF = ( tempC*9/5)+32;
    
-   //display.clearDisplay();
+   display.clearDisplay();
    display.setTextSize(1);
    display.setTextColor(SSD1306_WHITE);
-   display.setCursor(0,0);             // Start at top-left corner
+   display.setCursor(30,12);             // Start at top-left corner
 
    Serial.printf("test%f\n",tempF);
    display.printf("%f\n",tempF);
-   display.display(); 
-  
-} //End Void Loop
-
-void displayTemp() {
-  
+   display.display();  
 }
