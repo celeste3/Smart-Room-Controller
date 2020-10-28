@@ -21,8 +21,12 @@ Adafruit_SSD1306 display(SCREEN_WIDTH, SCREEN_HEIGHT, &Wire, OLED_RESET);
 
 EthernetClient client;
 bool status;
-const int trigPin = 5;
 const int echoPin = 4;
+const int trigPin = 5;
+const int serialClock = 10;
+const int serialData = 12;
+const int teaButton = 13;
+const int fanButton = 16;
 
 
 
