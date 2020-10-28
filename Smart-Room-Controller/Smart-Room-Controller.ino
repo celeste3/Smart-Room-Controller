@@ -28,7 +28,7 @@ float tempF;
 float tempC;
 
 EthernetClient client;
-bool ethStatus;
+bool etherStatus;
 const int serialClock = 10;
 
 const int echoPin = 3;  // attach digital pin Echo of HC-SR04
@@ -37,7 +37,6 @@ const int trigPin = 4;  // attach digital pin Trig of HC-SR04
 const int teaButton = 13;
 const int fanButton = 14;
 
-
 void setup() {
   //Open Serial Communication and wait for port to open: //This Code is not mine testing Ethernet connection
   Serial.begin(9600);
@@ -45,8 +44,8 @@ void setup() {
   while (!Serial);
   Serial.println("Starting Program");
   //Start ethernet connection
-  ethStatus = Ethernet.begin(mac); 
-  if (!ethStatus) {
+  etherStatus = Ethernet.begin(mac); 
+  if (!etherStatus) {
     Serial.println("failed to configure Ethernet using DHCP");
     //no point in continuing
     while(1);
@@ -59,19 +58,18 @@ void setup() {
     if (thisbyte < 3) Serial.print(".");
     }
   Serial.println();
-
-      
+  
  //default settings
   bmeStatus = bme.begin(0x76);
   
   if(bmeStatus==false){
      Serial.println("Could not find a valid BME280 sensor, check wiring, address, sensor ID!");
      Serial.print(F("Fail"));
+
+      pinMode (teaButton, INPUT);
+      pinMode (fanButton, INPUT);
   }
-
 }
-
-
 
 //
 //
@@ -108,6 +106,4 @@ void loop() {
    tempC = bme.readTemperature();
    tempF = ( tempC*9/5)+32;
    Serial.printf("%f\n",tempF);
-
-
 } //End Void Loop
