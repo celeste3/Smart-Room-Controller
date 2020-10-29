@@ -15,6 +15,7 @@
 //#include <Ethernet.h>
 #include <mac.h>
 #include <wemo.h>
+#include <hue.h>
 
 #include <OneButton.h>
 
@@ -36,6 +37,11 @@ float tempC;
 
 const int echoPin = 2;  // attach digital pin Echo of HC-SR04
 const int trigPin = 3;  // attach digital pin Trig of HC-SR04
+
+int lightNum;
+bool HueOn;
+int HueColor;
+int HueBright;
 
 OneButton teaButton (15, false, false);
 OneButton fanButton (16, false, false);
@@ -106,12 +112,17 @@ void setup() {
 }
 
 void loop() {
-  displayTemp();
-  getMotion();
+  lightsOn();
+//  displayTemp();
+  //getMotion();
   teaButton.tick();
   fanButton.tick();
+  lightsOn();
   
 } //End Void Loop
+
+void lightsOn();
+  
 
 void getMotion(){
   // Clears the trigPin condition
@@ -145,7 +156,7 @@ void displayTemp() {
 
 void clickTea(){
   Serial.println("Tea was clicked");
-  
+  if (switchON
 }
 
 void clickFan(){
