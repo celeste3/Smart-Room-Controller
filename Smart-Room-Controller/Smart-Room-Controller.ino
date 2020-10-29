@@ -132,11 +132,11 @@ void displayTemp() {
    // Reads temperature in fahrenheit
    tempC = bme.readTemperature();
    tempF = ( tempC*9/5)+32;
-   
+
    display.clearDisplay();
-   display.setTextSize(1);
+   display.setTextSize(5);
    display.setTextColor(SSD1306_WHITE);
-   display.setCursor(30,30); // Start at top-left corner
+   display.setCursor(1,25); // Almost in the center of OLED
 
    Serial.printf("%f\n",tempF);
    display.printf("%f\n",tempF);
