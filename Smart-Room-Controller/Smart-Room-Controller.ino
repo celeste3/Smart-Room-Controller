@@ -5,13 +5,14 @@
  * Date: October 26, 2020
  */
 
-#include <SPI.h>
-#include <Wire.h>
+#include <SPI.h> //Serial Peripheral Interface (SPI) is an interface bus commonly used to send data between microcontrollers and small peripherals such as shift registers, sensors, and SD cards
+#include <Wire.h> //Allows you to communicate with I2C / TWI devices
+#include <colors.h>
 
-#include <Adafruit_BME280.h>
-#include <Adafruit_GFX.h>
-#include <Adafruit_SSD1306.h>
-#include <Ethernet.h>
+#include <Adafruit_BME280.h> //Humidity, Barometric Pressure & Temp 
+#include <Adafruit_GFX.h> //Provides a common syntax and set of graphics functions for all of our LCD and OLED displays
+#include <Adafruit_SSD1306.h> //Adafruit GFX library which provides graphics
+//#include <Ethernet.h>
 #include <mac.h>
 #include <wemo.h>
 
@@ -29,9 +30,9 @@ int bmeStatus;
 float tempF;
 float tempC;
 
-EthernetClient client;
-bool etherStatus;
-const int serialClock = 10;
+//EthernetClient client;
+//bool etherStatus;
+//const int serialClock = 10;
 
 const int echoPin = 2;  // attach digital pin Echo of HC-SR04
 const int trigPin = 3;  // attach digital pin Trig of HC-SR04
@@ -49,21 +50,21 @@ void setup() {
   
   while (!Serial);
   Serial.println("Starting Program");
-  //Start ethernet connection
-  etherStatus = Ethernet.begin(mac); 
-  if (!etherStatus) {
-    Serial.println("failed to configure Ethernet using DHCP");
-    //no point in continuing
-    while(1);
-    }
-  //print your local IP address
-  Serial.print("My IP address:");
-  for (byte thisbyte = 0; thisbyte < 4; thisbyte++) {
-    //print value of each byte of the IP address
-    Serial.print(Ethernet.localIP()[thisbyte], DEC);
-    if (thisbyte < 3) Serial.print(".");
-    }
-  Serial.println();
+//  //Start ethernet connection
+//  etherStatus = Ethernet.begin(mac); 
+//  if (!etherStatus) {
+//    Serial.println("failed to configure Ethernet using DHCP");
+//    //no point in continuing
+//    while(1);
+//    }
+//  //print your local IP address
+//  Serial.print("My IP address:");
+//  for (byte thisbyte = 0; thisbyte < 4; thisbyte++) {
+//    //print value of each byte of the IP address
+//    Serial.print(Ethernet.localIP()[thisbyte], DEC);
+//    if (thisbyte < 3) Serial.print(".");
+//    }
+//  Serial.println();
   
  //default settings
   bmeStatus = bme.begin(0x76);
