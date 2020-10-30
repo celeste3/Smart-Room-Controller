@@ -56,21 +56,21 @@ void setup() {
   
   while (!Serial);
   Serial.println("Starting Program");
-//  //Start ethernet connection
-//  etherStatus = Ethernet.begin(mac); 
-//  if (!etherStatus) {
-//    Serial.println("failed to configure Ethernet using DHCP");
-//    //no point in continuing
-//    while(1);
-//    }
-//  //print your local IP address
-//  Serial.print("My IP address:");
-//  for (byte thisbyte = 0; thisbyte < 4; thisbyte++) {
-//    //print value of each byte of the IP address
-//    Serial.print(Ethernet.localIP()[thisbyte], DEC);
-//    if (thisbyte < 3) Serial.print(".");
-//    }
-//  Serial.println();
+  //Start ethernet connection
+  etherStatus = Ethernet.begin(mac); 
+  if (!etherStatus) {
+    Serial.println("failed to configure Ethernet using DHCP");
+    //no point in continuing
+    while(1);
+    }
+  //print your local IP address
+  Serial.print("My IP address:");
+  for (byte thisbyte = 0; thisbyte < 4; thisbyte++) {
+    //print value of each byte of the IP address
+    Serial.print(Ethernet.localIP()[thisbyte], DEC);
+    if (thisbyte < 3) Serial.print(".");
+    }
+  Serial.println();
   
  //default settings
   bmeStatus = bme.begin(0x76);
@@ -113,8 +113,8 @@ void setup() {
 
 void loop() {
   lightsOn();
-//  displayTemp();
-  //getMotion();
+  displayTemp();
+  getMotion();
   teaButton.tick();
   fanButton.tick();
   lightsOn();
@@ -156,9 +156,20 @@ void displayTemp() {
 
 void clickTea(){
   Serial.println("Tea was clicked");
-  if (switchON
+  if(teaButton == true){
+    switchON(wemo[2]);
+  }
+  else{
+    switchOFF(wemo[2]);
+  }
 }
 
 void clickFan(){
   Serial.println("Fan was clicked");
+   if(fanButton == true){
+    switchON(wemo[3]);
+  }
+  else{
+    switchOFF(wemo[3]);
+  }
 }
