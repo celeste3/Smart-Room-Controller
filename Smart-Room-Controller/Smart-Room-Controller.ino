@@ -12,7 +12,7 @@
 #include <Adafruit_BME280.h> //Humidity, Barometric Pressure & Temp 
 #include <Adafruit_GFX.h> //Provides a common syntax and set of graphics functions for all of our LCD and OLED displays
 #include <Adafruit_SSD1306.h> //Adafruit GFX library which provides graphics
-//#include <Ethernet.h>
+#include <Ethernet.h>
 #include <mac.h>
 #include <wemo.h>
 #include <hue.h>
@@ -31,9 +31,9 @@ int bmeStatus;
 float tempF;
 float tempC;
 
-//EthernetClient client;
-//bool etherStatus;
-//const int serialClock = 10;
+EthernetClient client;
+bool etherStatus;
+const int serialClock = 10;
 
 const int echoPin = 2;  // attach digital pin Echo of HC-SR04
 const int trigPin = 3;  // attach digital pin Trig of HC-SR04
@@ -45,6 +45,10 @@ int HueBright;
 
 OneButton teaButton (15, false, false);
 OneButton fanButton (16, false, false);
+const int teapot = 2;
+const int fan = 3;
+bool teaOn;
+bool fanOn;
 
 // Declare Variables for getMotion
 long duration;  // variable for the duration of sound wave travel
@@ -107,21 +111,19 @@ void setup() {
   Serial.println("Ultrasonic Sensor HC-SR04 Test");
 
   teaButton.attachClick(clickTea);
-  fanButton.attachClick(clickFan);
-    
+  fanButton.attachClick(clickFan);   
 }
 
 void loop() {
-  lightsOn();
+//  lightsOn();
   displayTemp();
   getMotion();
   teaButton.tick();
   fanButton.tick();
-  lightsOn();
-  
+ 
 } //End Void Loop
 
-void lightsOn();
+//void lightsOn();
   
 
 void getMotion(){
@@ -156,20 +158,22 @@ void displayTemp() {
 
 void clickTea(){
   Serial.println("Tea was clicked");
-  if(teaButton == true){
-    switchON(wemo[2]);
+  teaOn = !teaOn;
+  if(teaOn == true){
+    switchON(teapot);
   }
   else{
-    switchOFF(wemo[2]);
+    switchOFF(teapot);
   }
 }
 
 void clickFan(){
   Serial.println("Fan was clicked");
-   if(fanButton == true){
-    switchON(wemo[3]);
+  fanOn = !fanOn; 
+   if(fanOn == true){
+    switchON(fan);
   }
   else{
-    switchOFF(wemo[3]);
+    switchOFF(fan);
   }
 }
