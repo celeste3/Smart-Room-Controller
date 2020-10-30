@@ -15,7 +15,8 @@
 #include <Ethernet.h>
 #include <mac.h>
 #include <wemo.h>
-#include <hue.h>
+#include <hue2.h>
+
 
 #include <OneButton.h>
 
@@ -111,11 +112,14 @@ void setup() {
   Serial.println("Ultrasonic Sensor HC-SR04 Test");
 
   teaButton.attachClick(clickTea);
-  fanButton.attachClick(clickFan);   
+  fanButton.attachClick(clickFan);  
+  fanButton.attachLongPressStart(longPressFan);
+
+  lightsOn(255);
+  delay(5000);
 }
 
 void loop() {
-//  lightsOn();
   displayTemp();
   getMotion();
   teaButton.tick();
@@ -123,8 +127,14 @@ void loop() {
  
 } //End Void Loop
 
-//void lightsOn();
-  
+void lightsOn(int bright){
+  //TO DO CHANGE 5 TO A 6
+  for(int i = 0; i < 5; i++){
+      setHue(i,true,HueRed,bright,0);
+      delay(500); 
+    } 
+}
+
 
 void getMotion(){
   // Clears the trigPin condition
@@ -139,6 +149,9 @@ void getMotion(){
   
   distance = (duration * 0.034 / 2)*0.393701; // Speed of sound wave divided by 2 (go and back)
   Serial.printf("Time %i, Distance: %i, Duration %i \n",millis(),distance, duration);
+  if(distance < 6 ){
+    lightsOn(30);
+  }
 }
 
 void displayTemp() {
@@ -158,7 +171,7 @@ void displayTemp() {
 
 void clickTea(){
   Serial.println("Tea was clicked");
-  teaOn = !teaOn;
+  teaOn = !teaOn; //This changes the bool 
   if(teaOn == true){
     switchON(teapot);
   }
@@ -169,11 +182,14 @@ void clickTea(){
 
 void clickFan(){
   Serial.println("Fan was clicked");
-  fanOn = !fanOn; 
+  fanOn = !fanOn; //This changes the bool 
    if(fanOn == true){
     switchON(fan);
   }
   else{
     switchOFF(fan);
   }
+}
+void longPressFan(){
+  lightsOn(255);
 }
